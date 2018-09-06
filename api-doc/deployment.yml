@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-doc
+  labels:
+    app: doc-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: doc-nginx
+  template:
+    metadata:
+      labels:
+        app: doc-nginx
+    spec:
+      containers:
+      - name: doc
+        image: maresidencefr/doc
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /index.html
+            port: 80
+            httpHeaders:
+            - name: X-Custom-Header
+              value: Awesome
+          initialDelaySeconds: 3
+          periodSeconds: 3
+      imagePullSecrets:
+      - name: regcreds
